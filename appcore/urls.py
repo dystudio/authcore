@@ -1,4 +1,4 @@
-"""tutorial URL Configuration
+"""Appcore URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.8/topics/http/urls/
@@ -15,12 +15,14 @@ Including another URLconf
 """
 from django.conf.urls import include
 from django.conf.urls import url
+from makash import views
 from rest_framework import routers
-from tutorial.quickstart import views
 
 router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
+router.register(r'orgs', views.OrgViewSet)
+router.register(r'permissions', views.PermissionViewSet)
+router.register(r'users', views.UserViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.

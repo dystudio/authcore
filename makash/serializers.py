@@ -1,7 +1,22 @@
 from django.contrib.auth.models import Group
-from django.contrib.auth.models import User
 from django.contrib.auth.models import Permission
+from django.contrib.auth.models import User
+# from makash.models import Group
+from makash.models import Org
+# from makash.models import Permission
+# from makash.models import User
 from rest_framework import serializers
+
+
+class OrgSerializer(serializers.HyperlinkedModelSerializer):
+    """Serialize organization objects for viewing."""
+
+    class Meta:
+        model = Org
+        fields = (
+            "url",
+            "name",
+        )
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
@@ -17,7 +32,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class PermissionSerializer(serializers.HyperlinkedModelSerializer):
-    """Serialize perission objects for viewing."""
+    """Serialize permission objects for viewing."""
 
     class Meta:
         model = Permission
@@ -25,7 +40,6 @@ class PermissionSerializer(serializers.HyperlinkedModelSerializer):
             "url",
             "name",
             "codename",
-            "content_type",
         )
 
 

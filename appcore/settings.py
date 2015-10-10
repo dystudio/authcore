@@ -28,6 +28,7 @@ SECRET_KEY = 'e+7%s=(8c86s#-3t6%o58q&)&iv(89isjrfyv0mlr772bofxf-'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+POST_MORTEM = True
 
 ALLOWED_HOSTS = []
 
@@ -43,6 +44,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'makash',
 )
 
 REST_FRAMEWORK = {
@@ -87,8 +89,12 @@ WSGI_APPLICATION = 'appcore.wsgi.application'
 ##############
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'makash',
+        'USER': 'makashadmin',
+        'PASSWORD': 'makashadminpassword',
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 
