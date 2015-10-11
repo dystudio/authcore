@@ -1,5 +1,5 @@
 # authcore
-authcore. Django auth API. Django REST framework base. #drf #authN #authZ #psql.
+Python 3.5 #py3. PostgreSQL 9.4 #psql. Django 1.8 #django. Django REST framework 3.2 #drf. Authentication & Authorization API #authN #authZ.
 
 AKA, the shit.
 
