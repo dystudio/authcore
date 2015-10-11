@@ -1,14 +1,14 @@
-# from makash.models import Group
-from makash.models import Org
-# from makash.models import Permission
-# from makash.models import User
+# from authcore.models import Group
+from authcore.models import Org
+# from authcore.models import Permission
+# from authcore.models import User
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
 from django.contrib.auth.models import User
-from makash.serializers import GroupSerializer
-from makash.serializers import OrgSerializer
-from makash.serializers import PermissionSerializer
-from makash.serializers import UserSerializer
+from authcore.serializers import GroupSerializer
+from authcore.serializers import OrgSerializer
+from authcore.serializers import PermissionSerializer
+from authcore.serializers import UserSerializer
 from rest_framework import viewsets
 
 

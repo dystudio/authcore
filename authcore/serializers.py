@@ -1,10 +1,10 @@
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
 from django.contrib.auth.models import User
-# from makash.models import Group
-from makash.models import Org
-# from makash.models import Permission
-# from makash.models import User
+# from authcore.models import Group
+from authcore.models import Org
+# from authcore.models import Permission
+# from authcore.models import User
 from rest_framework import serializers
 
 

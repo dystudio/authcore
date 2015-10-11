@@ -1,7 +1,7 @@
 #!/bin/bash
 # -*- coding: utf8 -*-
 # Start up a postgres database for development.
-PG_DIR="$HOME/.makash"
+PG_DIR="$HOME/.authcore"
 PG_LOG="$PG_DIR/logfile"
 PG_DATA_DIR="$PG_DIR/data"
 
@@ -26,9 +26,9 @@ main() {
     sleep 5
 
     # Create default users and databases.
-    createuser -E makashadmin
-    createdb -O makashadmin makash
-    psql -U $(whoami) makash -c "ALTER USER makashadmin WITH PASSWORD 'makashadminpassword'" > /dev/null
+    createuser -E authcoreadmin
+    createdb -O authcoreadmin authcore
+    psql -U $(whoami) makash -c "ALTER USER authcoreadmin WITH PASSWORD 'authcoreadmin'" > /dev/null
 }
 
 ensure_pg

@@ -1,4 +1,4 @@
-"""Appcore URL Configuration
+"""Project URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/1.8/topics/http/urls/
@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import include
 from django.conf.urls import url
-from makash import views
+from authcore import views
 from rest_framework import routers
 
 router = routers.DefaultRouter()

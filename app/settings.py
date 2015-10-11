@@ -1,4 +1,4 @@
-"""Django settings for the appcore project.
+"""Django settings for this project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/1.8/topics/settings/
@@ -44,7 +44,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'makash',
+    'authcore',
 )
 
 REST_FRAMEWORK = {
@@ -90,9 +90,9 @@ WSGI_APPLICATION = 'appcore.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'makash',
-        'USER': 'makashadmin',
-        'PASSWORD': 'makashadminpassword',
+        'NAME': 'authcore',
+        'USER': 'authcoreadmin',
+        'PASSWORD': 'authcoreadmin',
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }

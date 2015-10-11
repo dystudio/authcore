@@ -1,5 +1,5 @@
-# mafteka
-מַפְתֵחַ — key. Django REST framework base. Django auth API. #drf #authN #authZ #pgsql.
+# authcore
+authcore. Django auth API. Django REST framework base. #drf #authN #authZ #psql.
 
 AKA, the shit.
 
@@ -17,7 +17,7 @@ Prime the database for development:
 ```
 
 ##### dev server
-To fire up the development server, execute the following:
+Fire up the development server:
 ```bash
 ./manage.py runserver
 ```
