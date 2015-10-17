@@ -56,6 +56,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',  # Only for browsable API.
     ),
     'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAdminUser',
         'rest_framework.permissions.IsAuthenticated',
         'rest_framework.permissions.DjangoModelPermissions',
     ),

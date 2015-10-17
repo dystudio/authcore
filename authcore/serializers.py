@@ -2,6 +2,8 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
 from django.contrib.auth.models import User
 from authcore.models import Org
+# from authcore.models import Permission
+# from authcore.models import User
 from rest_framework import serializers
 
 
@@ -48,9 +50,17 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         fields = (
             "url",
             "username",
+            "password",
             "email",
             "first_name",
             "last_name",
             "groups",
         )
-        write_only_fields = ("password")
+        extra_kwargs = {
+            "password": {
+                "write_only": True,
+                "style": {
+                    "input_type": "password",
+                }
+            }
+        }
