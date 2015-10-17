@@ -15,18 +15,28 @@ Including another URLconf
 """
 from django.conf.urls import include
 from django.conf.urls import url
-from authcore import views
 from rest_framework import routers
+from rest_framework_expiring_authtoken.views import obtain_expiring_auth_token
 
-router = routers.DefaultRouter()
-router.register(r'groups', views.GroupViewSet)
-router.register(r'orgs', views.OrgViewSet)
-router.register(r'permissions', views.PermissionViewSet)
-router.register(r'users', views.UserViewSet)
+from authcore import views
+
+# Build up authcore router.
+authcore_router = routers.DefaultRouter()
+authcore_router.register(r'groups', views.GroupViewSet)
+authcore_router.register(r'orgs', views.OrgViewSet)
+authcore_router.register(r'permissions', views.PermissionViewSet)
+authcore_router.register(r'users', views.UserViewSet)
 
 # Wire up our API using automatic URL routing.
-# Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    url(r'^', include(router.urls)),
-    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+
+    # Register the obtain token endpoint.
+    url(r'^auth/tokens/?', obtain_expiring_auth_token),
+
+    # Register the login URLs for the browsable API.
+    url(r'^auth/login/?', include('rest_framework.urls', namespace='rest_framework')),
+
+    # Register authcore router.
+    url(r'^', include(authcore_router.urls)),
+
 ]
