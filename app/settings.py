@@ -18,6 +18,7 @@ https://docs.djangoproject.com/en/1.8/howto/static-files/
 TODO(TheDodd): Quick-start development settings - unsuitable for production,
 see https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 """
+import datetime
 import os
 
 # Additional paths in this project should be built as such: os.path.join(BASE_DIR, ...)
@@ -44,11 +45,26 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
+    'rest_framework_expiring_authtoken',
     'authcore',
 )
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',  # Only for browsable API.
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAdminUser',
+        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.DjangoModelPermissions',
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+        'rest_framework.renderers.AdminRenderer',
+    ),
     'PAGE_SIZE': 100,
 }
 
@@ -63,7 +79,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.security.SecurityMiddleware',
 )
 
-ROOT_URLCONF = 'appcore.urls'
+ROOT_URLCONF = 'app.urls'
 
 TEMPLATES = [
     {
@@ -81,7 +97,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'appcore.wsgi.application'
+WSGI_APPLICATION = 'app.wsgi.application'
 
 
 ##############
@@ -97,6 +113,13 @@ DATABASES = {
         'PORT': '5432',
     }
 }
+
+
+###################
+# Authentication. #
+###################
+# UNAUTHENTICATED_USER =  # This is the default value of `request.user` for unauthenticated users.
+# UNAUTHENTICATED_TOKEN =  # This is the default value of `request.auth` for unauthenticated users.
 
 
 #########################
@@ -117,3 +140,10 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images). #
 ###########################################
 STATIC_URL = '/static/'
+
+
+############################
+# Extension configuration. #
+############################
+### Expiring auth tokens config. ###
+EXPIRING_TOKEN_LIFESPAN = datetime.timedelta(days=1)

@@ -1,2 +1,9 @@
+# Temporary ignores.
+authcore/migrations/*
+
+# Directory ignores.
+__pycache__
 db.*
+
+# File ignores.
 *.pyc

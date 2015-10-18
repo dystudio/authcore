@@ -13,7 +13,9 @@ For now, the app is only configured to be backed with PostgreSQL. Before firing 
 ##### dev syncdb
 Prime the database for development:
 ```bash
-./manage.py syncdb
+./manage.py makemigrations
+./manage.py migrate
+./manage.py createsuperuser
 ```
 
 ##### dev server
