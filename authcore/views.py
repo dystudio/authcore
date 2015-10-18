@@ -30,11 +30,17 @@ class PermissionViewSet(viewsets.ModelViewSet):
 
 class UserViewSet(viewsets.ModelViewSet):
     """API endpoint that allows users to be viewed or edited."""
-    queryset = User.objects.all().order_by('-date_joined')
+    queryset = User.objects.all()
     serializer_class = UserSerializer
 
     def perform_create(self, serializer):
         """Overload perform_create to ensure password is set correctly."""
+        user = serializer.save()
+        user.set_password(serializer.validated_data["password"])
+        user.save()
+
+    def perform_update(self, serializer):
+        """Overload perform_update to ensure password is set correctly."""
         user = serializer.save()
         user.set_password(serializer.validated_data["password"])
         user.save()
