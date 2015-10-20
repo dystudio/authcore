@@ -19,6 +19,7 @@ class OrgSerializer(serializers.HyperlinkedModelSerializer):
         )
         extra_kwargs = {
             "groups": {
+                "read_only": True,
                 "view_name": "group-detail",
             }
         }
