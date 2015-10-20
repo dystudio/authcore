@@ -1,10 +1,10 @@
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
 from django.contrib.auth.models import User
-from authcore.models import Org
-# from authcore.models import Permission
-# from authcore.models import User
 from rest_framework import serializers
+from rest_framework.reverse import reverse
+
+from authcore.models import Org
 
 
 class OrgSerializer(serializers.HyperlinkedModelSerializer):
@@ -15,7 +15,30 @@ class OrgSerializer(serializers.HyperlinkedModelSerializer):
         fields = (
             "url",
             "name",
+            "groups",
         )
+        extra_kwargs = {
+            "groups": {
+                "read_only": True,
+                "view_name": "group-detail",
+            }
+        }
+
+
+class GroupOrgField(serializers.HyperlinkedRelatedField):
+    """A custom field to display the possible Orgs that a new group can belong to."""
+
+    def display_value(self, instance):
+        return "Org: {name}".format(name=instance.name)
+
+    def get_url(self, obj, view_name, request, format):
+        if isinstance(obj, Org):
+            url_kwargs = {"pk": obj.pk}
+
+        else:
+            url_kwargs = {"pk": obj.org.pk}
+
+        return reverse("org-detail", kwargs=url_kwargs, request=request, format=format)
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
@@ -27,7 +50,10 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
             "url",
             "name",
             "permissions",
+            "org",
         )
+
+    org = GroupOrgField(queryset=Org.objects.all(), view_name="org-detail")
 
 
 class PermissionSerializer(serializers.HyperlinkedModelSerializer):

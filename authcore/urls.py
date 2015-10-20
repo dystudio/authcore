@@ -7,8 +7,8 @@ from authcore import views
 
 # Build up authcore router.
 authcore_router = routers.DefaultRouter()
-authcore_router.register(r'groups', views.GroupViewSet)
 authcore_router.register(r'orgs', views.OrgViewSet)
+authcore_router.register(r'groups', views.GroupViewSet)
 authcore_router.register(r'permissions', views.PermissionViewSet)
 authcore_router.register(r'users', views.UserViewSet)
 
