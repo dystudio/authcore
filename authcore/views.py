@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from rest_framework import viewsets
 
 from authcore.models import Org
+from authcore.models import OrgGroup
 from authcore.serializers import GroupSerializer
 from authcore.serializers import OrgSerializer
 from authcore.serializers import PermissionSerializer
@@ -20,6 +21,20 @@ class GroupViewSet(viewsets.ModelViewSet):
     """API endpoint that allows groups to be viewed or edited."""
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
+
+    def perform_create(self, serializer):
+        """Overload perform_create to ensure org relation is built properly."""
+        org = serializer.validated_data.pop("org")
+        group = serializer.save()
+        OrgGroup(org=org, group=group).save()
+
+    # TODO(TheDodd): ensure that this does not change the Org.
+    # def perform_update(self, serializer):
+    #     """Overload perform_update to ensure org relation is built properly."""
+    #     import ipdb;ipdb.set_trace()
+    #     org = serializer.validated_data.pop("org")
+    #     group = serializer.save()
+    #     OrgGroup(org=org, group=group).save()
 
 
 class PermissionViewSet(viewsets.ModelViewSet):
