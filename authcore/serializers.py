@@ -90,3 +90,5 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
                 }
             }
         }
+
+    email = serializers.EmailField(allow_blank=False)

@@ -28,13 +28,11 @@ class GroupViewSet(viewsets.ModelViewSet):
         group = serializer.save()
         OrgGroup(org=org, group=group).save()
 
-    # TODO(TheDodd): ensure that this does not change the Org.
-    # def perform_update(self, serializer):
-    #     """Overload perform_update to ensure org relation is built properly."""
-    #     import ipdb;ipdb.set_trace()
-    #     org = serializer.validated_data.pop("org")
-    #     group = serializer.save()
-    #     OrgGroup(org=org, group=group).save()
+    # TODO(TheDodd): I suspect that the serializer class has logic which can handle this more cleanly.
+    def perform_update(self, serializer):
+        """Overload perform_update to ensure org relation is built properly."""
+        serializer.validated_data.pop("org")  # Org must not be changed.
+        serializer.save()  # Group name and such can be changed.
 
 
 class PermissionViewSet(viewsets.ModelViewSet):
