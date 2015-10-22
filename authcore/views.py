@@ -13,8 +13,22 @@ from authcore.serializers import UserSerializer
 
 class OrgViewSet(viewsets.ModelViewSet):
     """API endpoint that allows organizations to be viewed or edited."""
-    queryset = Org.objects.all()
+    queryset = Org.objects.none()
     serializer_class = OrgSerializer
+
+    def get_queryset(self):
+        """Perform filtering based on authenticated user."""
+        # Staff has full visibility.
+        user = self.request.user
+        if user.is_staff:
+            return Org.objects.all()
+
+        # Derive the Orgs this user is associated with & return only those.
+        org_ids = set()
+        for group in user.groups.all():
+            org_ids.add(group.org.org.id)
+
+        return Org.objects.filter(id__in=org_ids)
 
 
 class GroupViewSet(viewsets.ModelViewSet):
