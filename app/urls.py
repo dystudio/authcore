@@ -15,9 +15,13 @@ Including another URLconf
 """
 from django.conf.urls import include
 from django.conf.urls import url
+from django.contrib import admin
 
 # Wire up our API using automatic URL routing.
 urlpatterns = [
+
+    # Register admin control panel URLs.
+    url(r'^admin/', include(admin.site.urls)),
 
     # Register the login URLs for the browsable API.
     url(r'^auth/login/?', include('rest_framework.urls', namespace='rest_framework')),
