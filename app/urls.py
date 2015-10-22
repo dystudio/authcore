@@ -15,18 +15,14 @@ Including another URLconf
 """
 from django.conf.urls import include
 from django.conf.urls import url
-from rest_framework_expiring_authtoken.views import obtain_expiring_auth_token
 
 # Wire up our API using automatic URL routing.
 urlpatterns = [
-
-    # Register the obtain token endpoint.
-    url(r'^auth/tokens/?', obtain_expiring_auth_token),
 
     # Register the login URLs for the browsable API.
     url(r'^auth/login/?', include('rest_framework.urls', namespace='rest_framework')),
 
     # Register authcore URLs.
-    url(r'^', include('authcore.urls')),
+    url(r'^', include('authcore.urls', namespace='v1')),
 
 ]
