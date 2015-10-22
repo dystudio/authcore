@@ -23,18 +23,27 @@ class OrgViewSet(viewsets.ModelViewSet):
         if user.is_staff:
             return Org.objects.all()
 
-        # Derive the Orgs this user is associated with & return only those.
-        org_ids = set()
-        for group in user.groups.all():
-            org_ids.add(group.org.org.id)
+        return user.orgs.all()
 
-        return Org.objects.filter(id__in=org_ids)
+    def perform_create(self, serializer):
+        """Overload perform_create to ensure requesting user is first Org member."""
+        org = serializer.save()
+        org.users.add(self.request.user)  # Add requesting user to Org.
 
 
 class GroupViewSet(viewsets.ModelViewSet):
     """API endpoint that allows groups to be viewed or edited."""
-    queryset = Group.objects.all()
+    queryset = Group.objects.none()
     serializer_class = GroupSerializer
+
+    def get_queryset(self):
+        """Perform filtering based on authenticated user."""
+        # Staff has full visibility.
+        user = self.request.user
+        if user.is_staff:
+            return Group.objects.all()
+
+        return user.groups.all()
 
     def perform_create(self, serializer):
         """Overload perform_create to ensure org relation is built properly."""
@@ -57,8 +66,24 @@ class PermissionViewSet(viewsets.ModelViewSet):
 
 class UserViewSet(viewsets.ModelViewSet):
     """API endpoint that allows users to be viewed or edited."""
+    # queryset = User.objects.none()
     queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    def get_queryset(self):
+        """Perform filtering based on authenticated user."""
+        # Staff has full visibility.
+        user = self.request.user
+        if user.is_staff:
+            return User.objects.all()
+
+        # Show all users based upon peer Org membership.
+        user_ids = {}
+        for org in user.orgs.all():
+            for org_user in org.users.all():
+                user_ids.add(org_user.id)
+
+        return user.objects.filter(id__in=user_ids)
 
     def perform_create(self, serializer):
         """Overload perform_create to ensure password is set correctly."""

@@ -16,11 +16,16 @@ class OrgSerializer(serializers.HyperlinkedModelSerializer):
             "url",
             "name",
             "groups",
+            "users",
         )
         extra_kwargs = {
             "groups": {
                 "read_only": True,
                 "view_name": "group-detail",
+            },
+            "users": {
+                "read_only": True,
+                "view_name": "user-detail",
             }
         }
 
@@ -81,8 +86,17 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             "first_name",
             "last_name",
             "groups",
+            "orgs",
         )
         extra_kwargs = {
+            "groups": {
+                "read_only": True,
+                "view_name": "group-detail",
+            },
+            "orgs": {
+                "read_only": True,
+                "view_name": "org-detail",
+            },
             "password": {
                 "write_only": True,
                 "style": {

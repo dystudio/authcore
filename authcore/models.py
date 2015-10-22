@@ -11,6 +11,7 @@ class Org(models.Model):
     """
 
     name = models.CharField(max_length=50, unique=True)
+    users = models.ManyToManyField(auth.models.User, related_name="orgs", related_query_name="orgs")
 
 
 class OrgGroup(models.Model):
