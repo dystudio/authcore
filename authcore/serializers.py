@@ -60,6 +60,14 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 
     org = GroupOrgField(queryset=Org.objects.all(), view_name="org-detail")
 
+    def update(self, instance, validated_data):
+        """Handle group updates."""
+        # Only allow for group name & permissions to be changed.
+        instance.name = validated_data.get("name", instance.name)
+        instance.permissions = validated_data.get("permissions", instance.permissions)
+        instance.save()
+        return instance
+
 
 class PermissionSerializer(serializers.HyperlinkedModelSerializer):
     """Serialize permission objects for viewing."""
@@ -105,4 +113,15 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             }
         }
 
-    email = serializers.EmailField(allow_blank=False)
+    def create(self, validated_data):
+        """Handle user creation."""
+        return User.objects.create_user(**validated_data)
+
+    def update(self, instance, validated_data):
+        """Handle user updates."""
+        # FIXME(TheDodd): browsable API is requiring password to be passed in during updates. Don't want that.
+        # Update basic profile info. Nothing more for now.
+        instance.first_name = validated_data.get("first_name", instance.first_name)
+        instance.last_name = validated_data.get("last_name", instance.last_name)
+        instance.save()
+        return instance

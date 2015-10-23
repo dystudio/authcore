@@ -9,11 +9,7 @@ auth.models.User._meta.get_field('email')._required = True
 
 
 class Org(models.Model):
-    """An organization to which groups belong.
-
-    Indexes:
-    - name: unique index.
-    """
+    """An organization to which groups belong."""
 
     name = models.CharField(max_length=50, unique=True)
     users = models.ManyToManyField(auth.models.User, related_name="orgs", related_query_name="orgs")

@@ -29,6 +29,7 @@ class OrgViewSet(viewsets.ModelViewSet):
         """Overload perform_create to ensure requesting user is first Org member."""
         org = serializer.save()
         org.users.add(self.request.user)  # Add requesting user to Org.
+        # TODO(TheDodd): add object-level permission to user as Org's "owner".
 
 
 class GroupViewSet(viewsets.ModelViewSet):
@@ -46,16 +47,10 @@ class GroupViewSet(viewsets.ModelViewSet):
         return user.groups.all()
 
     def perform_create(self, serializer):
-        """Overload perform_create to ensure org relation is built properly."""
+        """Perform group creation."""
         org = serializer.validated_data.pop("org")
         group = serializer.save()
         OrgGroup(org=org, group=group).save()
-
-    # TODO(TheDodd): I suspect that the serializer class has logic which can handle this more cleanly.
-    def perform_update(self, serializer):
-        """Overload perform_update to ensure org relation is built properly."""
-        serializer.validated_data.pop("org")  # Org must not be changed.
-        serializer.save()  # Group name and such can be changed.
 
 
 class PermissionViewSet(viewsets.ModelViewSet):
@@ -84,13 +79,3 @@ class UserViewSet(viewsets.ModelViewSet):
                 user_ids.add(org_user.id)
 
         return User.objects.filter(id__in=user_ids)
-
-    def perform_create(self, serializer):
-        """Overload perform_create to ensure password is set correctly."""
-        User.objects.create_user(**serializer.validated_data)
-
-    def perform_update(self, serializer):
-        """Overload perform_update to ensure password is set correctly."""
-        user = serializer.save()
-        user.set_password(serializer.validated_data["password"])
-        user.save()
