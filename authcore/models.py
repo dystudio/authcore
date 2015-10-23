@@ -3,6 +3,11 @@ from django.contrib import auth
 from django.db import models
 
 
+# Force the standard User model to require unique emails for users.
+auth.models.User._meta.get_field('email')._unique = True
+auth.models.User._meta.get_field('email')._required = True
+
+
 class Org(models.Model):
     """An organization to which groups belong.
 

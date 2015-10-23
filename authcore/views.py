@@ -78,18 +78,16 @@ class UserViewSet(viewsets.ModelViewSet):
             return User.objects.all()
 
         # Show all users based upon peer Org membership.
-        user_ids = {}
+        user_ids = {user.id}
         for org in user.orgs.all():
             for org_user in org.users.all():
                 user_ids.add(org_user.id)
 
-        return user.objects.filter(id__in=user_ids)
+        return User.objects.filter(id__in=user_ids)
 
     def perform_create(self, serializer):
         """Overload perform_create to ensure password is set correctly."""
-        user = serializer.save()
-        user.set_password(serializer.validated_data["password"])
-        user.save()
+        User.objects.create_user(**serializer.validated_data)
 
     def perform_update(self, serializer):
         """Overload perform_update to ensure password is set correctly."""

@@ -114,13 +114,6 @@ DATABASES = {
 }
 
 
-###################
-# Authentication. #
-###################
-# UNAUTHENTICATED_USER =  # This is the default value of `request.user` for unauthenticated users.
-# UNAUTHENTICATED_TOKEN =  # This is the default value of `request.auth` for unauthenticated users.
-
-
 #########################
 # Internationalization. #
 #########################
