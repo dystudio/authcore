@@ -3,14 +3,16 @@ from django.contrib import auth
 from django.db import models
 
 
-class Org(models.Model):
-    """An organization to which groups belong.
+# Force the standard User model to require unique emails for users.
+auth.models.User._meta.get_field('email')._unique = True
+auth.models.User._meta.get_field('email')._required = True
 
-    Indexes:
-    - name: unique index.
-    """
+
+class Org(models.Model):
+    """An organization to which groups belong."""
 
     name = models.CharField(max_length=50, unique=True)
+    users = models.ManyToManyField(auth.models.User, related_name="orgs", related_query_name="orgs")
 
 
 class OrgGroup(models.Model):

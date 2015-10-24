@@ -56,15 +56,14 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',  # Only for browsable API.
     ),
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAdminUser',
         'rest_framework.permissions.IsAuthenticated',
         'rest_framework.permissions.DjangoModelPermissions',
     ),
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
-        'rest_framework.renderers.AdminRenderer',
     ),
+    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
     'PAGE_SIZE': 100,
 }
 
@@ -113,13 +112,6 @@ DATABASES = {
         'PORT': '5432',
     }
 }
-
-
-###################
-# Authentication. #
-###################
-# UNAUTHENTICATED_USER =  # This is the default value of `request.user` for unauthenticated users.
-# UNAUTHENTICATED_TOKEN =  # This is the default value of `request.auth` for unauthenticated users.
 
 
 #########################
