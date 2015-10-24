@@ -129,3 +129,12 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         instance.last_name = validated_data.get("last_name", instance.last_name)
         instance.save()
         return instance
+
+
+def jwt_response_payload_handler(token, user, request):
+    """Response payload handler for valid JWT requests."""
+    representation = UserSerializer(context={'request': request}).to_representation(user)
+    return {
+        'token': token,
+        'user': representation,
+    }
