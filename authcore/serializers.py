@@ -95,6 +95,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             "url",
             "username",
             "password",
+            "nonce",
             "email",
             "first_name",
             "last_name",
@@ -103,6 +104,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         )
         read_only_fields = (
             "id",
+            "nonce",
             "groups",
             "orgs",
         )
@@ -114,12 +116,14 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
                 "style": {
                     "input_type": "password",
                 }
-            }
+            },
         }
+
+    nonce = serializers.PrimaryKeyRelatedField(read_only=True, source="nonce.value")
 
     def create(self, validated_data):
         """Handle user creation."""
-        return User.objects.create_user(**validated_data)
+        return self.model.objects.create_user(**validated_data)
 
     def update(self, instance, validated_data):
         """Handle user updates."""
