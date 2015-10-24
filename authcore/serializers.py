@@ -13,20 +13,20 @@ class OrgSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Org
         fields = (
+            "id",
             "url",
             "name",
             "groups",
             "users",
         )
+        read_only_fields = (
+            "id",
+            "groups",
+            "users",
+        )
         extra_kwargs = {
-            "groups": {
-                "read_only": True,
-                "view_name": "group-detail",
-            },
-            "users": {
-                "read_only": True,
-                "view_name": "user-detail",
-            }
+            "groups": {"view_name": "group-detail"},
+            "users": {"view_name": "user-detail"}
         }
 
 
@@ -52,11 +52,13 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Group
         fields = (
+            "id",
             "url",
             "name",
             "permissions",
             "org",
         )
+        read_only_fields = ("id",)
 
     org = GroupOrgField(queryset=Org.objects.all(), view_name="org-detail")
 
@@ -75,10 +77,12 @@ class PermissionSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Permission
         fields = (
+            "id",
             "url",
             "name",
             "codename",
         )
+        read_only_fields = ("id",)
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -87,6 +91,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
         fields = (
+            "id",
             "url",
             "username",
             "password",
@@ -96,15 +101,14 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
             "groups",
             "orgs",
         )
+        read_only_fields = (
+            "id",
+            "groups",
+            "orgs",
+        )
         extra_kwargs = {
-            "groups": {
-                "read_only": True,
-                "view_name": "group-detail",
-            },
-            "orgs": {
-                "read_only": True,
-                "view_name": "org-detail",
-            },
+            "groups": {"view_name": "group-detail"},
+            "orgs": {"view_name": "org-detail"},
             "password": {
                 "write_only": True,
                 "style": {
