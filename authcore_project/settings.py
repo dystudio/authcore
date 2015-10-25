@@ -1,4 +1,4 @@
-"""Django settings for this project.
+"""Django settings for the authcore project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/1.8/topics/settings/
@@ -52,7 +52,7 @@ INSTALLED_APPS = (
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        'authcore.authentication.JSONWebTokenAuthenticationWithNonce',
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',  # Only for browsable API.
     ),
@@ -80,7 +80,7 @@ MIDDLEWARE_CLASSES = (
     'authcore.middleware.StdExceptionMiddleware',
 )
 
-ROOT_URLCONF = 'app.urls'
+ROOT_URLCONF = 'authcore_project.urls'
 
 TEMPLATES = [
     {
@@ -98,7 +98,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'app.wsgi.application'
+WSGI_APPLICATION = 'authcore_project.wsgi.application'
 
 
 ##############
@@ -148,7 +148,7 @@ EXPIRING_TOKEN_LIFESPAN = datetime.timedelta(days=1)
 JWT_AUTH = {
     # 'JWT_ENCODE_HANDLER': 'rest_framework_jwt.utils.jwt_encode_handler',
     # 'JWT_DECODE_HANDLER': 'rest_framework_jwt.utils.jwt_decode_handler',
-    # 'JWT_PAYLOAD_HANDLER': 'rest_framework_jwt.utils.jwt_payload_handler',
+    'JWT_PAYLOAD_HANDLER': 'authcore.serializers.jwt_payload_handler',
     # 'JWT_PAYLOAD_GET_USER_ID_HANDLER': 'rest_framework_jwt.utils.jwt_get_user_id_from_payload_handler',
     'JWT_RESPONSE_PAYLOAD_HANDLER': 'authcore.serializers.jwt_response_payload_handler',
     # 'JWT_SECRET_KEY': SECRET_KEY,

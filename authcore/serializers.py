@@ -1,3 +1,7 @@
+"""Authcore serializers."""
+import calendar
+import datetime
+
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
 from django.contrib.auth.models import User
@@ -5,6 +9,7 @@ from rest_framework import serializers
 from rest_framework.reverse import reverse
 
 from authcore.models import Org
+from authcore_project import settings
 
 
 class OrgSerializer(serializers.HyperlinkedModelSerializer):
@@ -133,6 +138,23 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         instance.last_name = validated_data.get("last_name", instance.last_name)
         instance.save()
         return instance
+
+
+def jwt_payload_handler(user):
+    payload = {
+        'user_id': user.id,
+        'username': user.username,
+        'nonce': user.nonce.value,
+        'exp': datetime.datetime.utcnow() + settings.JWT_AUTH['JWT_EXPIRATION_DELTA'],
+    }
+
+    # Include original issued at time for a brand new token, to allow token refresh.
+    if settings.JWT_AUTH['JWT_ALLOW_REFRESH']:
+        payload['orig_iat'] = calendar.timegm(
+            datetime.datetime.utcnow().utctimetuple()
+        )
+
+    return payload
 
 
 def jwt_response_payload_handler(token, user, request):
