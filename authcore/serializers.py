@@ -1,10 +1,10 @@
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
-from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
 from authcore.models import Org
+from authcore.models import User
 
 
 class OrgSerializer(serializers.HyperlinkedModelSerializer):

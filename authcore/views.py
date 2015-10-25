@@ -1,10 +1,10 @@
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
-from django.contrib.auth.models import User
 from rest_framework import viewsets
 
 from authcore.models import Org
 from authcore.models import OrgGroup
+from authcore.models import User
 from authcore.serializers import GroupSerializer
 from authcore.serializers import OrgSerializer
 from authcore.serializers import PermissionSerializer

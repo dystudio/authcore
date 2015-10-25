@@ -100,6 +100,8 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'app.wsgi.application'
 
+AUTH_USER_MODEL = 'authcore.User'
+
 
 ##############
 # Databases. #

@@ -1,13 +1,65 @@
 """Custom data models."""
+from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import Group
-from django.contrib.auth.models import User
+from django.core.validators import RegexValidator
 from django.db import models
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 
 from authcore.utils import get_usable_nonce
-from authcore.utils import nonce_update_bound_user_method
-from authcore.utils import user_nonce_needs_update
+
+
+class UserManager(BaseUserManager):
+    """Authcore custom user manager."""
+
+    def create_user(self, username, password, **other_fields):
+        """."""
+        import ipdb;ipdb.set_trace()
+        print("testing")
+        pass
+
+    def create_superuser(self, username, password, **other_fields):
+        """."""
+        import ipdb;ipdb.set_trace()
+        print("testing")
+        pass
+
+
+class User(AbstractBaseUser):
+    """Authcore custom user model."""
+
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ('username', 'email', 'password')
+
+    objects = UserManager()
+    username = models.CharField(max_length=30, validators=[
+        RegexValidator(
+            regex=r'^[-A-Za-z0-9_@+.]+$',
+            message='Username must be alphanumeric and may contain _, @, +, . and -.'
+        )
+    ])
+    email = models.EmailField(unique=True)
+    first_name = CharField(max_length=30, blank=True)
+    last_name = CharField(max_length=30, blank=True)
+
+    def set_password(self, raw_password):
+        """Overload set password to update user nonce."""
+        output = super(User, self).set_password(raw_password)
+
+        # Only attempt to create a nonce if the user has been saved to disk.
+        if self.id:
+            UserNonce(user=self).save()
+
+        return output
+
+    def set_unusable_password(self):
+        """Overload set password to update user nonce."""
+        output = super(User, self).set_unusable_password()
+
+        # Only attempt to create a nonce if the user has been saved to disk.
+        if self.id:
+            UserNonce(user=self).save()
+
+        return output
 
 
 class Org(models.Model):
@@ -32,35 +84,3 @@ class UserNonce(models.Model):
     """
     user = models.OneToOneField(User, related_name="nonce", related_query_name="nonce")
     value = models.CharField(max_length=255, default=get_usable_nonce)
-
-    @staticmethod
-    @receiver(post_save, sender=User)
-    def create_user_nonce(sender, instance, created, **kwargs):
-        """Create a user's nonce."""
-        if created:
-            UserNonce(user=instance).save()
-
-    @staticmethod
-    @receiver(user_nonce_needs_update)
-    def update_user_nonce(user, **kwargs):
-        """Update a user's nonce."""
-        # If user has not been saved yet, then do nothing.
-        if not user.id:
-            return
-
-        # Else, just update it.
-        else:
-            user.nonce.value = get_usable_nonce()
-            user.nonce.save()
-
-
-#######################
-# User model updates. #
-#######################
-# Force the standard User model to require unique emails for users.
-User._meta.get_field('email')._unique = True
-User._meta.get_field('email')._required = True
-
-# Ensure these user methods update the user's nonce.
-User.set_password = nonce_update_bound_user_method(User.set_password)
-User.set_unusable_password = nonce_update_bound_user_method(User.set_unusable_password)
