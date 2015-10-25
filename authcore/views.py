@@ -1,3 +1,4 @@
+"""Authcore views."""
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
 from django.contrib.auth.models import User
@@ -62,7 +63,7 @@ class PermissionViewSet(viewsets.ModelViewSet):
 class UserViewSet(viewsets.ModelViewSet):
     """API endpoint that allows users to be viewed or edited."""
     # queryset = User.objects.none()
-    queryset = User.objects.all()
+    queryset = User.objects.none()
     serializer_class = UserSerializer
 
     def get_queryset(self):
