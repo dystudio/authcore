@@ -6,6 +6,9 @@ https://docs.djangoproject.com/en/1.8/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 
+For REST framework settings, see
+http://www.django-rest-framework.org/api-guide/settings/
+
 For database registry and configuration, see
 https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
@@ -20,6 +23,10 @@ see https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 """
 import datetime
 import os
+
+# Ensure needed env variables are in place for development.
+if not os.getenv('AUTHCORE_BACKEND_HOST'):
+    raise RuntimeError('AUTHCORE_BACKEND_HOST must be specified for development.')
 
 # Additional paths in this project should be built as such: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -49,24 +56,6 @@ INSTALLED_APPS = (
     'rest_framework_expiring_authtoken',
     'authcore',
 )
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'authcore.authentication.JSONWebTokenAuthenticationWithNonce',
-        'rest_framework.authentication.TokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',  # Only for browsable API.
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-        'rest_framework.permissions.DjangoModelPermissions',
-    ),
-    'DEFAULT_RENDERER_CLASSES': (
-        'rest_framework.renderers.JSONRenderer',
-        'rest_framework.renderers.BrowsableAPIRenderer',
-    ),
-    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
-    'PAGE_SIZE': 100,
-}
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -101,16 +90,38 @@ TEMPLATES = [
 WSGI_APPLICATION = 'authcore_project.wsgi.application'
 
 
+###################
+# REST framework. #
+###################
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'authcore.authentication.JSONWebTokenAuthenticationWithNonce',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',  # Only for browsable API.
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+        'rest_framework.permissions.DjangoModelPermissions',
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ),
+    'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.NamespaceVersioning',
+    'PAGE_SIZE': 100,
+}
+
+
 ##############
 # Databases. #
 ##############
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'authcore',
-        'USER': 'authcoreadmin',
+        'NAME': 'postgres',
+        'USER': 'authcore',
         'PASSWORD': 'authcoreadmin',
-        'HOST': '127.0.0.1',
+        'HOST': os.environ['AUTHCORE_BACKEND_HOST'],
         'PORT': '5432',
     }
 }

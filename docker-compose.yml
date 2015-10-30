@@ -1,0 +1,8 @@
+authcore.postgresql:
+  container_name: "authcore.postgresql"
+  image: "postgres:9.4"
+  ports:
+    - "5432:5432"
+  environment:
+    POSTGRES_USER: authcore
+    POSTGRES_PASSWORD: authcoreadmin

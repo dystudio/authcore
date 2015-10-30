@@ -121,7 +121,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
                 "style": {
                     "input_type": "password",
                 }
-            },
+            }
         }
 
     nonce = serializers.PrimaryKeyRelatedField(read_only=True, source="nonce.value")

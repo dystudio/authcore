@@ -23,8 +23,8 @@ urlpatterns = [
     url(r'^auth/tokens/?', obtain_expiring_auth_token),
 
     # Register endpoints for JWTs.
-    url(r'^auth/jwt/obtain/?', 'rest_framework_jwt.views.obtain_jwt_token'),
-    url(r'^auth/jwt/refresh/?', 'rest_framework_jwt.views.refresh_jwt_token'),
-    url(r'^auth/jwt/verify/?', 'rest_framework_jwt.views.verify_jwt_token'),
+    url(r'^jwt/authenticate/?', 'rest_framework_jwt.views.obtain_jwt_token'),
+    url(r'^jwt/verify/?', 'rest_framework_jwt.views.verify_jwt_token'),
+    url(r'^jwt/refresh/?', 'rest_framework_jwt.views.refresh_jwt_token'),
 
 ]
