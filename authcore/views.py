@@ -64,7 +64,7 @@ class GroupViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         """Perform group creation."""
-        org = serializer.validated_data.pop("org")
+        org = serializer.validated_data.pop("of_org")
         group = serializer.save()
         OrgGroup(org=org, group=group).save()
 
