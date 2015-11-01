@@ -2,10 +2,12 @@
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
 from django.contrib.auth.models import User
+from guardian.shortcuts import assign_perm
 from rest_framework import viewsets
 
 from authcore.models import Org
 from authcore.models import OrgGroup
+from authcore.permissions import IsOrgOwnerOrMemberReadOnly
 from authcore.serializers import GroupSerializer
 from authcore.serializers import OrgSerializer
 from authcore.serializers import PermissionSerializer
@@ -16,6 +18,7 @@ class OrgViewSet(viewsets.ModelViewSet):
     """API endpoint that allows organizations to be viewed or edited."""
     queryset = Org.objects.none()
     serializer_class = OrgSerializer
+    permission_classes = [IsOrgOwnerOrMemberReadOnly]
 
     def get_queryset(self):
         """Perform filtering based on authenticated user."""
@@ -30,7 +33,7 @@ class OrgViewSet(viewsets.ModelViewSet):
         """Overload perform_create to ensure requesting user is first Org member."""
         org = serializer.save()
         org.users.add(self.request.user)  # Add requesting user to Org.
-        # TODO(TheDodd): add object-level permission to user as Org's "owner".
+        assign_perm('authcore.org_owner', self.request.user, org)
 
 
 class GroupViewSet(viewsets.ModelViewSet):

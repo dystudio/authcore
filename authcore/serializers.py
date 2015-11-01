@@ -5,6 +5,7 @@ import datetime
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
 from django.contrib.auth.models import User
+from guardian.shortcuts import assign_perm
 from rest_framework import serializers
 from rest_framework.reverse import reverse
 
@@ -128,7 +129,9 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
     def create(self, validated_data):
         """Handle user creation."""
-        return self.model.objects.create_user(**validated_data)
+        user = User.objects.create_user(**validated_data)
+        assign_perm('authcore.add_org', user)
+        return user
 
     def update(self, instance, validated_data):
         """Handle user updates."""

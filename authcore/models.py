@@ -13,6 +13,11 @@ from authcore.utils import user_nonce_needs_update
 class Org(models.Model):
     """An organization to which groups belong."""
 
+    class Meta:
+        permissions = (
+            ("org_owner", "Is organization owner."),
+        )
+
     name = models.CharField(max_length=50, unique=True)
     users = models.ManyToManyField(User, related_name="orgs", related_query_name="orgs")
 
