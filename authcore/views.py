@@ -4,10 +4,14 @@ from django.contrib.auth.models import Permission
 from django.contrib.auth.models import User
 from guardian.shortcuts import assign_perm
 from rest_framework import viewsets
+from rest_framework.permissions import DjangoModelPermissions
+from rest_framework.permissions import IsAuthenticated
+
 
 from authcore.models import Org
 from authcore.models import OrgGroup
-from authcore.permissions import IsOrgOwnerOrMemberReadOnly
+from authcore.permissions import IsOrgOwnerElseOrgReadOnly
+from authcore.permissions import IsOrgOwnerForGroupCreation
 from authcore.serializers import GroupSerializer
 from authcore.serializers import OrgSerializer
 from authcore.serializers import PermissionSerializer
@@ -18,7 +22,11 @@ class OrgViewSet(viewsets.ModelViewSet):
     """API endpoint that allows organizations to be viewed or edited."""
     queryset = Org.objects.none()
     serializer_class = OrgSerializer
-    permission_classes = [IsOrgOwnerOrMemberReadOnly]
+    permission_classes = [
+        IsAuthenticated,
+        DjangoModelPermissions,
+        IsOrgOwnerElseOrgReadOnly,
+    ]
 
     def get_queryset(self):
         """Perform filtering based on authenticated user."""
@@ -40,6 +48,10 @@ class GroupViewSet(viewsets.ModelViewSet):
     """API endpoint that allows groups to be viewed or edited."""
     queryset = Group.objects.none()
     serializer_class = GroupSerializer
+    permission_classes = [
+        IsAuthenticated,
+        IsOrgOwnerForGroupCreation,
+    ]
 
     def get_queryset(self):
         """Perform filtering based on authenticated user."""

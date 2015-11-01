@@ -21,12 +21,25 @@ class Org(models.Model):
     name = models.CharField(max_length=50, unique=True)
     users = models.ManyToManyField(User, related_name="orgs", related_query_name="orgs")
 
+    def __repr__(self):
+        return '<Org: {.name}>'.format(self)
+
 
 class OrgGroup(models.Model):
     """A profile model for linking Groups and Orgs."""
 
     group = models.OneToOneField(Group, related_name="org", related_query_name="org")
     org = models.ForeignKey(Org, related_name="groups", related_query_name="group")
+
+
+class _Group(Group):
+    """Extend the base group model via proxy."""
+
+    class Meta:
+        proxy = True
+        permissions = (
+            ('group_maintainer', 'Is group maintainer.'),
+        )
 
 
 class UserNonce(models.Model):
