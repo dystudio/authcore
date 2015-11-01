@@ -60,7 +60,12 @@ class GroupViewSet(viewsets.ModelViewSet):
         if user.is_staff:
             return Group.objects.all()
 
-        return user.groups.all()
+        visible_groups = set()
+        for org in user.orgs.all():
+            for group in org.groups.all():
+                visible_groups.add(group.pk)
+
+        return Group.objects.filter(id__in=visible_groups)
 
     def perform_create(self, serializer):
         """Perform group creation."""
@@ -89,9 +94,9 @@ class UserViewSet(viewsets.ModelViewSet):
             return User.objects.all()
 
         # Show all users based upon peer Org membership.
-        user_ids = {user.id}
+        visible_users = {user.id}
         for org in user.orgs.all():
             for org_user in org.users.all():
-                user_ids.add(org_user.id)
+                visible_users.add(org_user.id)
 
-        return User.objects.filter(id__in=user_ids)
+        return User.objects.filter(id__in=visible_users)
