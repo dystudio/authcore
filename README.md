@@ -11,7 +11,7 @@ Authcore currently supports JWT as its primary means of authentication & verific
 - `/jwt/refresh/` — post a JWT `token` to this endpoint to get a new JWT token and the corresponding user's data.
 
 ### development
-##### dev database
+##### dev infrastructure
 For now, the app is only configured to be backed with PostgreSQL. Before firing anything up, do the following:
 ```bash
 source compose-wrapper.sh up -d
@@ -19,7 +19,7 @@ source compose-wrapper.sh up -d
 
 `compose-wrapper` must be `source`ed. It simply ensures a docker machine is up and started with your virtualbox provider, then passes any arguments down to the `docker-compose` command line tool. It exports the machine host's IP to be used with the development server.
 
-##### dev syncdb
+##### dev database
 Prime the database for development:
 ```bash
 ./manage.py makemigrations
