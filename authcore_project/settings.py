@@ -18,6 +18,12 @@ https://docs.djangoproject.com/en/1.8/topics/i18n/
 For static resources, see
 https://docs.djangoproject.com/en/1.8/howto/static-files/
 
+For JWT settings, see
+http://getblimp.github.io/django-rest-framework-jwt/
+
+For Guardian settings, see
+http://django-guardian.readthedocs.org/en/v1.2/configuration.html
+
 TODO(TheDodd): Quick-start development settings - unsuitable for production,
 see https://docs.djangoproject.com/en/1.8/howto/deployment/checklist/
 """
@@ -52,9 +58,13 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'rest_framework.authtoken',
-    'rest_framework_expiring_authtoken',
+    'guardian',
     'authcore',
+)
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'guardian.backends.ObjectPermissionBackend',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -66,7 +76,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'authcore.middleware.StdExceptionMiddleware',
+    'authcore_project.middleware.StdExceptionMiddleware',
 )
 
 ROOT_URLCONF = 'authcore_project.urls'
@@ -95,8 +105,7 @@ WSGI_APPLICATION = 'authcore_project.wsgi.application'
 ###################
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'authcore.authentication.JSONWebTokenAuthenticationWithNonce',
-        'rest_framework.authentication.TokenAuthentication',
+        'authcore_project.authentication.JSONWebTokenAuthenticationWithNonce',
         'rest_framework.authentication.SessionAuthentication',  # Only for browsable API.
     ),
     'DEFAULT_PERMISSION_CLASSES': (
@@ -147,14 +156,10 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-############################
-# Extension configuration. #
-############################
-### Expiring auth tokens config. ###
-EXPIRING_TOKEN_LIFESPAN = datetime.timedelta(days=1)
-
-
-### JWT config. ###
+#######################
+# Extension settings. #
+#######################
+### JWT settings. ###
 # Commented items hold the default value.
 JWT_AUTH = {
     # 'JWT_ENCODE_HANDLER': 'rest_framework_jwt.utils.jwt_encode_handler',
@@ -174,3 +179,8 @@ JWT_AUTH = {
     # 'JWT_ISSUER': None,
     # 'JWT_AUTH_HEADER_PREFIX': 'JWT',
 }
+
+
+### Guardian settings. ###
+ANONYMOUS_USER_ID = None
+GUARDIAN_RAISE_403 = True

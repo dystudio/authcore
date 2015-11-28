@@ -25,7 +25,9 @@ fi
 docker-machine start authcore > /dev/null
 eval $(docker-machine env authcore)
 export AUTHCORE_BACKEND_HOST=$(docker-machine ip authcore)
-echo "AUTHCORE_BACKEND_HOST has been exported as: '$AUTHCORE_BACKEND_HOST'."
+echo "AUTHCORE_BACKEND_HOST=$AUTHCORE_BACKEND_HOST"
 
 # Wrap compose. Pass any args provided directly to compose.
-docker-compose $@
+if [[ "$@" != '' ]]; then
+    docker-compose $@
+fi

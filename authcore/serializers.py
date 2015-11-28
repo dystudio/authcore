@@ -5,8 +5,8 @@ import datetime
 from django.contrib.auth.models import Group
 from django.contrib.auth.models import Permission
 from django.contrib.auth.models import User
+from guardian.shortcuts import assign_perm
 from rest_framework import serializers
-from rest_framework.reverse import reverse
 
 from authcore.models import Org
 from authcore_project import settings
@@ -35,20 +35,18 @@ class OrgSerializer(serializers.HyperlinkedModelSerializer):
         }
 
 
-class GroupOrgField(serializers.HyperlinkedRelatedField):
+class OfOrgField(serializers.PrimaryKeyRelatedField):
     """A custom field to display the possible Orgs that a new group can belong to."""
 
     def display_value(self, instance):
-        return "Org: {name}".format(name=instance.name)
+        return '{name}'.format(name=instance.name)
 
-    def get_url(self, obj, view_name, request, format):
-        if isinstance(obj, Org):
-            url_kwargs = {"pk": obj.pk}
+    def get_queryset(self, *args, **kwargs):
+        user = self.context['request'].user
+        if user.is_staff:
+            return Org.objects.all()
 
-        else:
-            url_kwargs = {"pk": obj.org.pk}
-
-        return reverse("org-detail", kwargs=url_kwargs, request=request, format=format)
+        return user.orgs.all()
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
@@ -62,10 +60,15 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
             "name",
             "permissions",
             "org",
+            "of_org",
         )
-        read_only_fields = ("id",)
+        read_only_fields = (
+            "id",
+            "org",
+        )
 
-    org = GroupOrgField(queryset=Org.objects.all(), view_name="org-detail")
+    org = serializers.HyperlinkedRelatedField(read_only=True, source='org.org', view_name='org-detail')
+    of_org = OfOrgField(write_only=True, queryset=Org.objects, label='Org')
 
     def update(self, instance, validated_data):
         """Handle group updates."""
@@ -128,7 +131,9 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
     def create(self, validated_data):
         """Handle user creation."""
-        return self.model.objects.create_user(**validated_data)
+        user = User.objects.create_user(**validated_data)
+        assign_perm('authcore.add_org', user)
+        return user
 
     def update(self, instance, validated_data):
         """Handle user updates."""
