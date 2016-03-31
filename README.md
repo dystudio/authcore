@@ -4,32 +4,19 @@ Python 3.5 #py3. PostgreSQL 9.4 #psql. Django 1.8 #django. Django REST framework
 AKA, the shit.
 
 ### authentication
-Authcore currently supports JWT as its primary means of authentication & verification. The following endpoints implement Authcore's JWT functionality:
+AuthCore currently supports JWT as its primary means of authentication & verification. The following endpoints implement AuthCore's JWT functionality:
 
 - `/jwt/authenticate/` — post `username` and `password` credentials to this endpoint to receive a JWT and the corresponding user's data.
 - `/jwt/verify/` — post a JWT `token` to this endpoint to verify that it is valid and receive the corresponding user's data.
 - `/jwt/refresh/` — post a JWT `token` to this endpoint to get a new JWT token and the corresponding user's data.
 
 ### development
-##### dev infrastructure
-For now, the app is only configured to be backed with PostgreSQL. Before firing anything up, do the following:
-```bash
-source compose-wrapper.sh up -d
-```
+Docker is used for all aspects of this project's development and deployment. Given a docker daemon to communicate with, simply do `docker-compose up -d` and your development infrastructure should come up.
 
-`compose-wrapper` must be `source`ed. It simply ensures a docker machine is up and started with your virtualbox provider, then passes any arguments down to the `docker-compose` command line tool. It exports the machine host's IP to be used with the development server.
-
-##### dev database
-Prime the database for development:
+The database will need to be primed before meaningful development can begin:
 ```bash
-./manage.py makemigrations
+docker exec -it <authcoreID> bash
+./manage.py makemigrations authcore
 ./manage.py migrate
 ./manage.py createsuperuser
 ```
-
-##### dev server
-Fire up the development server:
-```bash
-./manage.py runserver
-```
-This should bring up the API on `localhost:8000`.

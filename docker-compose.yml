@@ -1,8 +1,24 @@
-authcore.postgresql:
-  container_name: "authcore.postgresql"
-  image: "postgres:9.4"
-  ports:
-    - "5432:5432"
-  environment:
-    POSTGRES_USER: authcore
-    POSTGRES_PASSWORD: authcoreadmin
+version: '2'
+services:
+  authcore:
+    build: .
+    command: bash -c 'sleep 7 && python manage.py runserver 0.0.0.0:8000'
+    depends_on:
+      - postgresql
+    environment:
+      AUTHCORE_BACKEND_HOST: postgresql
+    links:
+      - postgresql
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/authcore # Allow for source to be linked to repo for dev compose file.
+
+  postgresql:
+    container_name: "authcore.postgresql"
+    image: "postgres:9.4"
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: authcore
+      POSTGRES_PASSWORD: authcoreadmin
