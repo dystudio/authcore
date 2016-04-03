@@ -15,11 +15,11 @@ class Org(models.Model):
 
     class Meta:
         permissions = (
-            ("org_owner", "Is organization owner."),
+            ('org_owner', 'Is organization owner.'),
         )
 
     name = models.CharField(max_length=50, unique=True)
-    users = models.ManyToManyField(User, related_name="orgs", related_query_name="orgs")
+    users = models.ManyToManyField(User, related_name='orgs', related_query_name='orgs')
 
     def __repr__(self):
         return '<Org: {.name}>'.format(self)
@@ -28,8 +28,8 @@ class Org(models.Model):
 class OrgGroup(models.Model):
     """A profile model for linking Groups and Orgs."""
 
-    group = models.OneToOneField(Group, related_name="org", related_query_name="org")
-    org = models.ForeignKey(Org, related_name="groups", related_query_name="group")
+    group = models.OneToOneField(Group, related_name='org', related_query_name='org')
+    org = models.ForeignKey(Org, related_name='groups', related_query_name='group')
 
 
 class _Group(Group):
@@ -48,7 +48,7 @@ class UserNonce(models.Model):
     This is implemented specifically for invalidating JWTs under needed circumstances, as JWTs
     are typically not stored in a database.
     """
-    user = models.OneToOneField(User, related_name="nonce", related_query_name="nonce")
+    user = models.OneToOneField(User, related_name='nonce', related_query_name='nonce')
     value = models.CharField(max_length=255, default=get_usable_nonce)
 
     @staticmethod

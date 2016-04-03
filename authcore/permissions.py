@@ -8,6 +8,7 @@ class IsOrgOwnerElseOrgReadOnly(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         """Ensure the requesting user is one of the org's owners for non-safe methods."""
+        import ipdb;ipdb.set_trace()
         # Only grant read access to users that are members of the Org.
         if request.method in permissions.SAFE_METHODS:
             return request.user in obj.users.all()

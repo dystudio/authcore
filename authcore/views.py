@@ -4,9 +4,10 @@ from django.contrib.auth.models import Permission
 from django.contrib.auth.models import User
 from guardian.shortcuts import assign_perm
 from rest_framework import viewsets
+from rest_framework.decorators import detail_route
 from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.permissions import IsAuthenticated
-
+from rest_framework.response import Response
 
 from authcore.models import Org
 from authcore.models import OrgGroup
@@ -42,6 +43,20 @@ class OrgViewSet(viewsets.ModelViewSet):
         org = serializer.save()
         org.users.add(self.request.user)  # Add requesting user to Org.
         assign_perm('authcore.org_owner', self.request.user, org)
+        assign_perm('authcore.change_org', self.request.user, org)
+        assign_perm('authcore.delete_org', self.request.user, org)
+
+    @detail_route(methods=['get', 'put'])
+    def invite(self, request, pk):
+        import ipdb;ipdb.set_trace()
+        return Response({
+            'request': [
+                str(request),
+                str(request.__dict__),
+            ],
+            'pk': pk,
+            'user': '{}:{}'.format(request.user.id, request.user.username),
+        })
 
 
 class GroupViewSet(viewsets.ModelViewSet):
