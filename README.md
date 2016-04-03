@@ -10,6 +10,8 @@ AuthCore currently supports JWT as its primary means of authentication & verific
 - `/jwt/verify/` — post a JWT `token` to this endpoint to verify that it is valid and receive the corresponding user's data.
 - `/jwt/refresh/` — post a JWT `token` to this endpoint to get a new JWT token and the corresponding user's data.
 
+All other resources are protected by validation the following header: `Authorization: JWT <jwt token>`.
+
 ### development
 Docker is used for all aspects of this project's development and deployment. Given a docker daemon to communicate with, simply do `docker-compose up -d` and your development infrastructure should come up.
 
